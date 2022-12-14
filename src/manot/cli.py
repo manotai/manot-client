@@ -1,71 +1,114 @@
-import uuid
-import base64
-from src.actioncable import Message, Subscription, Connection
+from typing import Literal, Union, Optional, List
+import requests
+import json
+from logger import log
 
 
 class Manot:
 
-    def __init__(self):
-        self.__token = self.__generate_uuid()
-        self.__connection = Connection(url="ws://127.0.0.1:3000/cable")
-        self.__connection.connect()
-        self.__subscription = Subscription(self.__connection, identifier={'channel': 'ImageChannel', 'token': self.__token})
-        self.__subscription.on_receive(self.__on_receive)
-        self.__subscription.create()
-
-    def __on_receive(self, message):
-        print('New message arrived!')
-        if type(message) is dict and 'images' in message and message['images'] and type(message['images']) is list:
-            self.__image_to_np_array(message['image'])
-            self.__listener("asass")
-        else:
-            print("No required param in message.")
-
-    def __send_message(self, message:str):
-        message = Message(
-            action='get_similar_images',
-            data={'message': message}
-        )
-        self.__subscription.send(message)
-
-    def __image_to_np_array(self, base64_image:bytes):
-
-        with open("imageToSave.png", "wb") as fh:
-            fh.write(base64.b64decode((base64_image)))
-            fh.close()
+    def __init__(self, url: str) -> None:
+        self.__url = url
 
 
-    def listen(self, inference_fn, options=None):
-        if options is None:
-            options = {}
-        elif options is not dict:
-            raise('Wrong Argument pased')
-        self.__listener = inference_fn
-        self.__options = options
+    def setup(
+            self,
+            name: str,
+            images_path: str,
+            ground_truths_path: str,
+            detections_path: str,
+            detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
+            classes_txt_path: str,
+            data_provider: Literal['s3', 'local']
+    ) -> Union[bool, dict]:
 
-        # TODO do request to server
-        #TODO socket
-        self.__send_message("Started to listen...")
+        url = f"{self.__url}/api/v1/collector/setup"
+        data = {
+            "name": name,
+            "images_path": images_path,
+            "ground_truths_path": ground_truths_path,
+            "detections_path": detections_path,
+            "detections_metadata_format": detections_metadata_format,
+            "classes_txt_path": classes_txt_path,
+            "data_provider": data_provider
+        }
+
+        try:
+            response = requests.post(url=url, data=json.dumps(data))
+        except Exception:
+            log.error("There is problem with request.")
+            return False
+
+        if response.status_code == 202:
+            log.info("Setup is successfully created.")
+            return response.json()
+
+        log.error(response.json()['message'])
+        return False
 
 
+    def get_setup(self, setup_id: int) -> Union[bool, None, dict]:
 
-    def on(self, img):
-        print(img)
-        # self.listener(options,img)
+        url = f"{self.__url}/api/v1/setup/{setup_id}"
 
-    def __generate_uuid(self) -> str:
-        return str(uuid.uuid4())
+        try:
+            response = requests.get(url=url)
+        except Exception:
+            log.error("There is problem with request.")
+            return False
 
+        if response.status_code != 200:
+            log.warning("Setup not found.")
+            return None
 
+        log.info("Setup is successfully found.")
+        return response.json()
 
-def my_inference(image):
-    print("Image name already has reached into inference: ", image)
+    def insight(
+            self,
+            name: str,
+            weight_name: str,
+            setup_id: int,
+            files: Optional[bytes],
+            data_path: Union[str, List[str]],
+            data_provider: Literal['s3', 'local', 'deeplake']
+    ) -> Union[bool, dict]:
 
+        url = f"{self.__url}/api/v1/real_time/"
+        data = {
+            "name": name,
+            "weight_name": weight_name,
+            "setup_id": setup_id,
+            "files": files,
+            "data_path": data_path,
+            "data_provider": data_provider
+        }
 
-def main():
+        try:
+            response = requests.post(url=url, data=json.dumps(data))
+        except Exception:
+            log.error("There is problem with request.")
+            return False
 
-    manot = Manot()
-    manot.listen(my_inference)
+        if response.status_code == 202:
+            log.info("Insights process is successfully started.")
+            return response.json()
 
-if __name__ == '__main__':
-    main()
+        log.error(response.json()['message'])
+        return False
+
+    def get_insight(self, insight_id: int) -> Union[bool, None, dict]:
+
+        url = f"{self.__url}/api/v1/real_time/{insight_id}"
+
+        try:
+            response = requests.get(url=url).json()
+        except Exception:
+            log.error("There is problem with request.")
+            return False
+
+        if not response:
+            log.warning("Insight not found.")
+            return None
+
+        log.info("Insight is successfully found.")
+        return response
