@@ -1,7 +1,7 @@
 from typing import Literal, Union, Optional, List
 import requests
 import json
-from logger import log
+from .logger import log
 
 
 class Manot:
