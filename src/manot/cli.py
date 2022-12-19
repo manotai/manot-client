@@ -2,13 +2,15 @@ from typing import Literal, Union, Optional, List
 import requests
 import json
 from .logger import log
+import ipyplot
+from PIL import Image
+from io import BytesIO
 
 
 class Manot:
 
     def __init__(self, url: str) -> None:
         self.__url = url
-
 
     def setup(
             self,
@@ -44,7 +46,6 @@ class Manot:
 
         log.error(response.json()['message'])
         return False
-
 
     def get_setup(self, setup_id: int) -> Union[bool, None, dict]:
 
@@ -110,5 +111,27 @@ class Manot:
             log.warning("Insight not found.")
             return None
 
-        log.info("Insight is successfully found.")
         return response
+
+    def visualize_data_set(self, data_set_id: int):
+        url = f"{self.__url}/api/v1/data_set/{data_set_id}"
+
+        try:
+            response = requests.get(url=url).json()
+        except Exception:
+            log.error("There is problem with request.")
+            return False
+
+        if not response:
+            log.warning("Data Set not found.")
+            return None
+        images = response['data_set_images']
+        images_urls = []
+        for file in images:
+            images_urls.append(self.__process(file['id']))
+
+        return ipyplot.plot_images(images_urls, img_width=200, )
+
+    def __process(self, image_id: int):
+        url = f"{self.__url}/api/v1/image/{image_id}"
+        return url

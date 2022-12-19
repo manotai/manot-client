@@ -2,9 +2,9 @@
 name = "manot"
 version = "0.1.2"
 authors = [
-    {name = "manot", email="info@manot.ai"},
+    { name = "manot", email = "info@manot.ai" },
 ]
-license = {file = "LICENSE.txt"}
+license = { file = "LICENSE.txt" }
 description = "the manot package"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -16,7 +16,9 @@ classifiers = [
 keywords = ["src", "pyproject.toml"]
 
 dependencies = [
-    "requests>=2.28.1"
+    "requests>=2.28.1",
+    "Pillow==9.2.0",
+    "ipyplot==1.1.1",
 ]
 
 [project.urls]
