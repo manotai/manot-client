@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='manot',
-    version='0.1.3',
+    version='0.1.2',
     description='the manot package',
     author='manot',
     author_email='engineering@manot.ai',
