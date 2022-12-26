@@ -1,11 +1,11 @@
 manot
 =============
 
-[//]: # ([![pypi]&#40;https://img.shields.io/pypi/v/manot.svg&#41;]&#40;https://pypi.python.org/pypi/pydantic&#41;)
-[//]: # ([![versions]&#40;https://img.shields.io/pypi/pyversions/manot.svg&#41;]&#40;https://github.com/pydantic/pydantic&#41;)
-[//]: # ([![license]&#40;https://img.shields.io/github/license/manot-client/manot-client.svg&#41;]&#40;https://github.com/manotai/manot-client/blob/main/LICENSE&#41;)
+[![pypi](https://img.shields.io/pypi/v/manot.svg)](https://pypi.python.org/pypi/pydantic)
+[![versions](https://img.shields.io/pypi/pyversions/manot.svg)](https://github.com/pydantic/pydantic)
+[![license](https://img.shields.io/github/license/manot-client/manot-client.svg)](https://github.com/manotai/manot-client/blob/main/LICENSE)
 
-Flask-Migrate is an extension that handles SQLAlchemy database migrations for Flask applications using Alembic. The database operations are provided as command-line arguments under the `flask db` command.
+manot-description
 
 Installation
 ------------
@@ -66,6 +66,6 @@ Resources
 ---------
 
 - [API Documentation](https://api.manot.ai/api-documentation/v1)
-- [Jupyter Example](manot-client-notebook.ipynb)
+- [Jupyter Example](https://github.com/manotai/manot-client/blob/main/manot-client-notebook.ipynb)
 
 [//]: # (- [pypi]&#40;https://pypi.python.org/pypi/manot&#41; )
