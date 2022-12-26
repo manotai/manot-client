@@ -1,10 +1,8 @@
 from typing import Literal, Union, Optional, List
-import requests
-import json
 from .logger import log
+import requests
 import ipyplot
-from PIL import Image
-from io import BytesIO
+import json
 
 
 class Manot:
@@ -44,7 +42,7 @@ class Manot:
             log.info("Setup is successfully created.")
             return response.json()
 
-        log.error(response.json()['message'])
+        log.error(response.text)
         return False
 
     def get_setup(self, setup_id: int) -> Union[bool, None, dict]:
@@ -67,22 +65,21 @@ class Manot:
     def insight(
             self,
             name: str,
-            weight_name: str,
             setup_id: int,
-            files: Optional[bytes],
             data_path: Union[str, List[str]],
-            data_provider: Literal['s3', 'local', 'deeplake']
+            data_provider: Literal['s3', 'local', 'deeplake'],
+            weight_name: Optional[str] = None,
     ) -> Union[bool, dict]:
 
         url = f"{self.__url}/api/v1/real_time/"
         data = {
             "name": name,
-            "weight_name": weight_name,
             "setup_id": setup_id,
-            "files": files,
             "data_path": data_path,
             "data_provider": data_provider
         }
+        if weight_name:
+            data["weight_name"] = weight_name
 
         try:
             response = requests.post(url=url, data=json.dumps(data))
@@ -94,7 +91,7 @@ class Manot:
             log.info("Insights process is successfully started.")
             return response.json()
 
-        log.error(response.json()['message'])
+        log.error(response.text)
         return False
 
     def get_insight(self, insight_id: int) -> Union[bool, None, dict]:
@@ -111,6 +108,7 @@ class Manot:
             log.warning("Insight not found.")
             return None
 
+        log.info("Setup is successfully found.")
         return response
 
     def visualize_data_set(self, data_set_id: int):
@@ -125,6 +123,7 @@ class Manot:
         if not response:
             log.warning("Data Set not found.")
             return None
+
         images = response['data_set_images']
         images_urls = []
         for file in images:
@@ -135,3 +134,4 @@ class Manot:
     def __process(self, image_id: int):
         url = f"{self.__url}/api/v1/image/{image_id}"
         return url
+

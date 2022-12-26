@@ -1,1 +1,0 @@
-from .manot import Manot
