@@ -22,7 +22,7 @@ This is an example how to start:
 ```python
 from manot import Manot
 
-manot = Manot('manot_service_url')
+manot = Manot("manot_service_url", "token")
 ```
 
 ```python

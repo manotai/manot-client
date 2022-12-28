@@ -1,5 +1,5 @@
 from typing import Literal, Union, Optional, List
-from .logger import log
+from logger import log
 import requests
 import ipyplot
 import json
@@ -7,8 +7,9 @@ import json
 
 class Manot:
 
-    def __init__(self, url: str) -> None:
+    def __init__(self, url: str, token: str) -> None:
         self.__url = url
+        self.__token = token
 
     def setup(
             self,
@@ -21,7 +22,7 @@ class Manot:
             data_provider: Literal['s3', 'local']
     ) -> Union[bool, dict]:
 
-        url = f"{self.__url}/api/v1/collector/setup"
+        url = f"{self.__url}/api/v1/setup/"
         data = {
             "name": name,
             "images_path": images_path,
@@ -33,7 +34,7 @@ class Manot:
         }
 
         try:
-            response = requests.post(url=url, data=json.dumps(data))
+            response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
         except Exception:
             log.error("There is problem with request.")
             return False
@@ -71,7 +72,7 @@ class Manot:
             weight_name: Optional[str] = None,
     ) -> Union[bool, dict]:
 
-        url = f"{self.__url}/api/v1/real_time/"
+        url = f"{self.__url}/api/v1/insight/"
         data = {
             "name": name,
             "setup_id": setup_id,
@@ -82,7 +83,7 @@ class Manot:
             data["weight_name"] = weight_name
 
         try:
-            response = requests.post(url=url, data=json.dumps(data))
+            response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
         except Exception:
             log.error("There is problem with request.")
             return False
@@ -96,20 +97,21 @@ class Manot:
 
     def get_insight(self, insight_id: int) -> Union[bool, None, dict]:
 
-        url = f"{self.__url}/api/v1/real_time/{insight_id}"
+        url = f"{self.__url}/api/v1/insight/{insight_id}"
 
         try:
-            response = requests.get(url=url).json()
+            response = requests.get(url=url)
         except Exception:
             log.error("There is problem with request.")
             return False
 
-        if not response:
+        if response.status_code != 200:
             log.warning("Insight not found.")
             return None
 
         log.info("Setup is successfully found.")
-        return response
+        return response.json()
+
 
     def visualize_data_set(self, data_set_id: int):
         url = f"{self.__url}/api/v1/data_set/{data_set_id}"
