@@ -1,5 +1,5 @@
 from typing import Literal, Union, Optional, List
-from logger import log
+from .logger import log
 import requests
 import ipyplot
 import json
