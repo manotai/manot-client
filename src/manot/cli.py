@@ -1,5 +1,5 @@
 from typing import Literal, Union, Optional, List
-from .logger import log
+from logger import log
 import requests
 import ipyplot
 import json
@@ -109,7 +109,7 @@ class Manot:
             log.warning("Insight not found.")
             return None
 
-        log.info("Setup is successfully found.")
+        log.info("Insight is successfully found.")
         return response.json()
 
 
@@ -136,4 +136,3 @@ class Manot:
     def __process(self, image_id: int):
         url = f"{self.__url}/api/v1/image/{image_id}"
         return url
-

@@ -1,10 +1,10 @@
 [project]
 name = "manot"
-version = "0.1.6"
+version = "0.1.7"
 authors = [
     { name = "manot", email = "engineering@manot.ai" },
 ]
-license = { file = "LICENSE.txt" }
+license = { file = "LICENSE" }
 description = "the manot package"
 readme = "README.md"
 requires-python = ">=3.8"
