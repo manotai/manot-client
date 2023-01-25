@@ -43,7 +43,6 @@ print(setup)
 
 setup_info = manot.get_setup(setup["id"])
 # when setup is successfully finished, then setup_info is {"id": setup_id, "name": "setup_example", "status": "started"}
-
 ```
 
 ```python
@@ -63,6 +62,19 @@ insight_info = manot.get_insight(insight["id"])
 ```python
 manot.visualize_data_set(insight_info['data_set']['id'])
 ```
+
+```python
+# Upload data for Setup or Insights process
+manot.upload_data(dir_path="/path/to/data", process="process_name")
+```
+For Setup process
+- dir_path is directory path, which must contain images, detections, and ground_truths folders and classes.txt file.
+- process must be "setup".
+
+For Insight process
+- dir_path is directory path, which must contain data. Data formats must be ".jpeg", ".jpg", ".png", ".avi", ".gif", ".m4v", ".mkv" or ".mp4".
+- process must be "insight".
+
 
 Resources
 ---------
