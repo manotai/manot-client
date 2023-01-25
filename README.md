@@ -1,8 +1,8 @@
 manot
 =============
 
-[![pypi](https://img.shields.io/pypi/v/manot.svg)](https://pypi.python.org/pypi/pydantic)
-[![versions](https://img.shields.io/pypi/pyversions/manot.svg)](https://github.com/pydantic/pydantic)
+[![pypi](https://img.shields.io/pypi/v/manot.svg)](https://pypi.org/project/manot)
+[![versions](https://img.shields.io/pypi/pyversions/manot.svg)]()
 [![license](https://img.shields.io/pypi/l/manot)](https://github.com/manotai/manot-client/blob/main/LICENSE)
 
 The manot SDK is a wrapper on top of our API to make it easier to work with our model performance monitoring system.
@@ -23,9 +23,9 @@ Example
 This is an example how to start:
 
 ```python
-from manot import Manot
+from manot import manotAI
 
-manot = Manot("manot_service_url", "token")
+manot = manotAI("manot_service_url", "token")
 ```
 
 ```python
@@ -43,7 +43,6 @@ print(setup)
 
 setup_info = manot.get_setup(setup["id"])
 # when setup is successfully finished, then setup_info is {"id": setup_id, "name": "setup_example", "status": "started"}
-
 ```
 
 ```python
@@ -63,6 +62,19 @@ insight_info = manot.get_insight(insight["id"])
 ```python
 manot.visualize_data_set(insight_info['data_set']['id'])
 ```
+
+```python
+# Upload data for Setup or Insights process
+manot.upload_data(dir_path="/path/to/data", process="process_name")
+```
+For Setup process
+- dir_path is directory path, which must contain images, detections, and ground_truths folders and classes.txt file.
+- process must be "setup".
+
+For Insight process
+- dir_path is directory path, which must contain data. Data formats must be ".jpeg", ".jpg", ".png", ".avi", ".gif", ".m4v", ".mkv" or ".mp4".
+- process must be "insight".
+
 
 Resources
 ---------

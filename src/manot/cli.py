@@ -1,11 +1,14 @@
 from typing import Literal, Union, Optional, List
-from logger import log
+from .upload_manager import UploadManager
+from tqdm.notebook import tqdm
+from .logger import log
 import requests
 import ipyplot
 import json
+import time
 
 
-class Manot:
+class manotAI:
 
     def __init__(self, url: str, token: str) -> None:
         self.__url = url
@@ -40,7 +43,12 @@ class Manot:
             return False
 
         if response.status_code == 202:
-            log.info("Setup is successfully created.")
+            log.info("Setup is being prepared to be started.")
+            if self.__check_progress(self.get_setup, response.json()["id"]):
+                log.info("Setup has successfully created.")
+            else:
+                log.error(f'There is problem setup process with id {response.json()["id"]}.')
+
             return response.json()
 
         log.error(response.text)
@@ -60,7 +68,6 @@ class Manot:
             log.warning("Setup not found.")
             return None
 
-        log.info("Setup is successfully found.")
         return response.json()
 
     def insight(
@@ -131,8 +138,38 @@ class Manot:
         for file in images:
             images_urls.append(self.__process(file['id']))
 
-        return ipyplot.plot_images(images_urls, img_width=200, )
+        return ipyplot.plot_images(images_urls, img_width=200, show_url=False)
+
+
+    def upload_data(self, dir_path: str, process: Literal["setup", "insight"]):
+
+        upload_manager = UploadManager(directory=dir_path, url=self.__url, token=self.__token)
+        if process == "setup":
+            return upload_manager.upload_setup_data()
+        elif process == "insight":
+            return upload_manager.upload_insight_data()
+        else:
+            log.error("Process must be 'setup' or 'insight'.")
+            return False
+
 
     def __process(self, image_id: int):
         url = f"{self.__url}/api/v1/image/{image_id}"
         return url
+
+
+    def __check_progress(self, process_method, id):
+        progress = 0
+        progress_bar = tqdm(desc="Progress", total=100)
+        while progress < 100:
+            result = process_method(id)
+            if result and result["status"] != "failure":
+                progress_bar.update(result['progress'] - progress)
+                progress = result['progress']
+            else:
+                progress_bar.close()
+                return False
+            time.sleep(2)
+        progress_bar.close()
+        return True
+

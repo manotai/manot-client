@@ -1,18 +1,17 @@
 [project]
 name = "manot"
-version = "0.1.7"
+version = "0.3.0"
 authors = [
     { name = "manot", email = "engineering@manot.ai" },
 ]
 license = { file = "LICENSE" }
-description = "the manot package"
+description = "manot AI is a model observability platform to monitor computer vision performance in real-time."
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
     'Programming Language :: Python',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3 :: Only',
-    'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
@@ -26,6 +25,7 @@ dependencies = [
     "requests>=2.28.1",
     "Pillow~=9.2.0",
     "ipyplot~=1.1.1",
+    "tqdm~=4.64.1",
 ]
 
 [project.urls]
