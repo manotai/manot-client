@@ -1,8 +1,8 @@
 manot
 =============
 
-[![pypi](https://img.shields.io/pypi/v/manot.svg)](https://pypi.python.org/pypi/pydantic)
-[![versions](https://img.shields.io/pypi/pyversions/manot.svg)](https://github.com/pydantic/pydantic)
+[![pypi](https://img.shields.io/pypi/v/manot.svg)](https://pypi.org/project/manot)
+[![versions](https://img.shields.io/pypi/pyversions/manot.svg)]()
 [![license](https://img.shields.io/pypi/l/manot)](https://github.com/manotai/manot-client/blob/main/LICENSE)
 
 The manot SDK is a wrapper on top of our API to make it easier to work with our model performance monitoring system.
@@ -23,9 +23,9 @@ Example
 This is an example how to start:
 
 ```python
-from manot import Manot
+from manot import manotAI
 
-manot = Manot("manot_service_url", "token")
+manot = manotAI("manot_service_url", "token")
 ```
 
 ```python

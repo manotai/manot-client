@@ -13,7 +13,7 @@ class RequestFormatter(logging.Formatter):
 
     def __init__(self):
         super().__init__()
-        self.fmt = '%(asctime)s --  %(levelname)s: \t%(message)s'
+        self.fmt = '%(asctime)s -- %(levelname)s: --> %(message)s'
         self.FORMATS = {
             logging.DEBUG: self.white + self.fmt + self.reset,
             logging.INFO: self.green + self.fmt + self.reset,
