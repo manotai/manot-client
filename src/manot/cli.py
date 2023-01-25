@@ -153,6 +153,37 @@ class manotAI:
             return False
 
 
+    def calculate_map(
+            self,
+            ground_truths_path: str,
+            detections_path: str,
+            classes_txt_path: str,
+            data_provider: Literal['s3', 'local'],
+            data_set_id: Optional[int] = None
+    ):
+        url = f"{self.__url}/api/v1/map/"
+        data = {
+            "ground_truths_path": ground_truths_path,
+            "detections_path": detections_path,
+            "classes_txt_path": classes_txt_path,
+            "data_provider": data_provider,
+            "data_set_id": data_set_id
+        }
+
+        try:
+            response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
+        except Exception:
+            log.error("There is problem with request.")
+            return False
+
+        if response.status_code == 200:
+            log.info("mAP has successfully calculated.")
+            return response.json()
+
+        log.error(response.text)
+        return False
+
+
     def __process(self, image_id: int):
         url = f"{self.__url}/api/v1/image/{image_id}"
         return url
@@ -172,4 +203,3 @@ class manotAI:
             time.sleep(2)
         progress_bar.close()
         return True
-

@@ -75,6 +75,15 @@ For Insight process
 - dir_path is directory path, which must contain data. Data formats must be ".jpeg", ".jpg", ".png", ".avi", ".gif", ".m4v", ".mkv" or ".mp4".
 - process must be "insight".
 
+```python
+manot.calculate_map(
+    ground_truths_path="/path/to/ground_truths",
+    detections_path="/path/to/detections",
+    classes_txt_path="/path/to/classes.txt",
+    data_provider="local",  # it must be "s3" or "local"
+    data_set_id="data_set_id",  # if data_set_id is provided will calculate mAP only on selected data, otherwise will calculate mAP on all the data
+)
+```
 
 Resources
 ---------
