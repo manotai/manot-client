@@ -29,14 +29,35 @@ manot = manotAI("manot_service_url", "token")
 ```
 
 ```python
+# Setup process for "local" and "s3" providers
 setup = manot.setup(
-    name="setup_example",
-    images_path="/path/to/images",
-    ground_truths_path="/path/to/labels",
-    detections_path="/path/to/detections",
-    detections_metadata_format="xyx2y2",  # it must be one of "xyx2y2", "xywh", or "cxcywh"
-    classes_txt_path="/path/to/classes.txt",
-    data_provider="local"  # it must be "s3" or "local"
+    data_provider="local", # it must be "s3" or "local"
+    arguments={
+            "name": "setup_example",
+            "images_path": "/path/to/images",
+            "ground_truths_path": "/path/to/ground_truths",
+            "detections_path": "/path/to/detections",
+            "detections_metadata_format": "xyx2y2",  # it must be one of "xyx2y2", "xywh", or "cxcywh"
+            "classes_txt_path": "/path/to/classes.txt"
+        }
+)
+
+# Setup process for deeplake provider
+setup = manot.setup(
+    data_provider="deeplake",
+    arguments={
+            "name": "setup_example",
+            "detections_metadata_format": "xyx2y2",  # it must be one of "xyx2y2", "xywh", or "cxcywh"
+            "classes_txt_path": "/path/to/classes.txt"
+            "deeplake_token": "your deeplake token",
+            "data_set": "user/dataset/",
+            "detections_boxes_key": "deeplake key where detection boxes are stored",
+            "detections_labels_key": "deeplake key where where detection labels are stored",
+            "detections_score_key": "deeplake key where detections score is stored",
+            "ground_truths_boxes_key": "deeplake key where ground truth boxes are stored",
+            "ground_truths_labels_key": "deeplake key where ground truth labels are stored",
+            "classes": "classes for deeplake"
+        }
 )
 print(setup)
 # {"id": setup_id, "name": "setup_example", "status": "started"}

@@ -16,28 +16,42 @@ class manotAI:
 
     def setup(
             self,
-            name: str,
-            images_path: str,
-            ground_truths_path: str,
-            detections_path: str,
-            detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
-            classes_txt_path: str,
-            data_provider: Literal['s3', 'local']
+            data_provider: Literal['s3', 'local', 'deeplake'],
+            arguments: dict
     ) -> Union[bool, dict]:
+        """
+        :param data_provider: Provider name, it must be 's3', 'local' or 'deeplake'.
+        :param arguments: Request data to start setup process.
+
+            If data_provider is 'deeplake', arguments must contain such values::
+                name: str,
+                detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
+                classes_txt_path: str,
+                deeplake_token: str,
+                data_set: str,
+                detections_boxes_key: str,
+                detections_labels_key: str,
+                detections_score_key: str,
+                ground_truths_boxes_key: str,
+                ground_truths_labels_key: str,
+                classes: Optional[list[str]]
+            Otherwise:
+                name: str,
+                images_path: str,
+                ground_truths_path: str,
+                detections_path: str,
+                detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
+                classes_txt_path: str,
+        """
 
         url = f"{self.__url}/api/v1/setup/"
-        data = {
-            "name": name,
-            "images_path": images_path,
-            "ground_truths_path": ground_truths_path,
-            "detections_path": detections_path,
-            "detections_metadata_format": detections_metadata_format,
-            "classes_txt_path": classes_txt_path,
-            "data_provider": data_provider
-        }
+        if data_provider == "deeplake":
+            url = f"{url}deeplake"
+
+        arguments.update({"data_provider": data_provider})
 
         try:
-            response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
+            response = requests.post(url=url, data=json.dumps(arguments), headers={"token": self.__token})
         except Exception:
             log.error("There is problem with request.")
             return False
@@ -203,3 +217,4 @@ class manotAI:
             time.sleep(2)
         progress_bar.close()
         return True
+

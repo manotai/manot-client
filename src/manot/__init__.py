@@ -1,4 +1,4 @@
-from .cli import manotAI
+from .manot import manotAI
 import warnings
 
 warnings.filterwarnings("ignore")
