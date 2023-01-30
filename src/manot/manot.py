@@ -91,6 +91,7 @@ class manotAI:
             data_path: Union[str, List[str]],
             data_provider: Literal['s3', 'local', 'deeplake'],
             weight_name: Optional[str] = None,
+            deeplake_token: Optional[str] = None,
     ) -> Union[bool, dict]:
 
         url = f"{self.__url}/api/v1/insight/"
@@ -98,7 +99,8 @@ class manotAI:
             "name": name,
             "setup_id": setup_id,
             "data_path": data_path,
-            "data_provider": data_provider
+            "data_provider": data_provider,
+            "deeplake_token": deeplake_token
         }
         if weight_name:
             data["weight_name"] = weight_name
