@@ -11,7 +11,7 @@ import time
 class manotAI:
 
     def __init__(self, url: str, token: str) -> None:
-        self.__url = url
+        self.__url = url.rstrip('/')
         self.__token = token
 
     def setup(
@@ -217,4 +217,3 @@ class manotAI:
             time.sleep(2)
         progress_bar.close()
         return True
-

@@ -19,7 +19,7 @@ class UploadManager:
     def upload_insight_data(self):
 
         if not self._is_exist(self.directory):
-            log.error("No such directory.")
+            log.error(f"No such directory: {self.directory}")
             return False
 
         correct_files = []
@@ -41,12 +41,20 @@ class UploadManager:
         detections_path = os.path.join(self.directory, "detections")
         ground_truths_path = os.path.join(self.directory, "ground_truths")
         classes_txt_path = os.path.join(self.directory, "classes.txt")
-        if not self._is_exist(self.directory) \
-                or not self._is_exist(images_path) \
-                or not self._is_exist(detections_path) \
-                or not self._is_exist(ground_truths_path)\
-                or not os.path.isfile(classes_txt_path):
-            log.error("No such directory.")
+        if not self._is_exist(self.directory):
+            log.error(f"No such directory: {self.directory}")
+            return False
+        if not self._is_exist(images_path):
+            log.error(f"No such directory: {images_path}")
+            return False
+        if not self._is_exist(detections_path):
+            log.error(f"No such directory: {detections_path}")
+            return False
+        if not self._is_exist(ground_truths_path):
+            log.error(f"No such directory: {ground_truths_path}")
+            return False
+        if not os.path.isfile(classes_txt_path):
+            log.error(f"No such directory: {classes_txt_path}")
             return False
 
         images = glob.glob(images_path + "/*")
