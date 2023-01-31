@@ -26,7 +26,6 @@ class manotAI:
             If data_provider is 'deeplake', arguments must contain such values::
                 name: str,
                 detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
-                classes_txt_path: str,
                 deeplake_token: str,
                 data_set: str,
                 detections_boxes_key: str,
@@ -57,13 +56,14 @@ class manotAI:
             return False
 
         if response.status_code == 202:
-            log.info("Setup is being prepared to be started.")
-            if self.__check_progress(self.get_setup, response.json()["id"]):
+            log.info("Setup process is being prepared to be started.")
+            progress_result = self.__check_progress(self.get_setup, response.json()["id"])
+            if progress_result:
                 log.info("Setup has successfully created.")
+                return progress_result
             else:
                 log.error(f'There is problem setup process with id {response.json()["id"]}.')
-
-            return response.json()
+                return False
 
         log.error(response.text)
         return False
@@ -112,11 +112,18 @@ class manotAI:
             return False
 
         if response.status_code == 202:
-            log.info("Insights process is successfully started.")
-            return response.json()
+            log.info("Insight process is being prepared to be started.")
+            progress_result = self.__check_progress(self.get_insight, response.json()["id"])
+            if progress_result:
+                log.info("Insight has successfully created.")
+                return progress_result
+            else:
+                log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                return False
 
         log.error(response.text)
         return False
+
 
     def get_insight(self, insight_id: int) -> Union[bool, None, dict]:
 
@@ -132,7 +139,6 @@ class manotAI:
             log.warning("Insight not found.")
             return None
 
-        log.info("Insight is successfully found.")
         return response.json()
 
 
@@ -213,9 +219,11 @@ class manotAI:
             if result and result["status"] != "failure":
                 progress_bar.update(result['progress'] - progress)
                 progress = result['progress']
+                if result["status"] == "finished":
+                    progress_bar.close()
+                    return result
             else:
                 progress_bar.close()
                 return False
             time.sleep(2)
-        progress_bar.close()
-        return True
+

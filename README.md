@@ -48,7 +48,6 @@ setup = manot.setup(
     arguments={
             "name": "setup_example",
             "detections_metadata_format": "xyx2y2",  # it must be one of "xyx2y2", "xywh", or "cxcywh"
-            "classes_txt_path": "/path/to/classes.txt"
             "deeplake_token": "your deeplake token",
             "data_set": "user/dataset/",
             "detections_boxes_key": "deeplake key where detection boxes are stored",
