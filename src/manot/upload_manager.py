@@ -25,7 +25,7 @@ class UploadManager:
         correct_files = []
         for file_path in glob.glob(self.directory + "/*"):
             if file_path.endswith((".jpeg", ".jpg", ".png", ".avi", ".gif", ".m4v", ".mkv", ".mp4")):
-                correct_files.append({"type": "image", "path": file_path})
+                correct_files.append({"type": "images", "path": file_path})
 
         if not correct_files:
             log.error("There are no files to upload.")
