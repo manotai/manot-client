@@ -124,7 +124,6 @@ class manotAI:
         log.error(response.text)
         return False
 
-
     def get_insight(self, insight_id: int) -> Union[bool, None, dict]:
 
         url = f"{self.__url}/api/v1/insight/{insight_id}"
@@ -141,9 +140,8 @@ class manotAI:
 
         return response.json()
 
-
-    def visualize_data_set(self, data_set_id: int):
-        url = f"{self.__url}/api/v1/data_set/{data_set_id}"
+    def visualize_data_set(self, data_set_id: int, deeplake_token: str = None):
+        url = f"{self.__url}/api/v1/data_set/{data_set_id}?deeplake_token={deeplake_token}"
 
         try:
             response = requests.get(url=url).json()
@@ -158,10 +156,9 @@ class manotAI:
         images = response['data_set_images']
         images_urls = []
         for file in images:
-            images_urls.append(self.__process(file['id']))
+            images_urls.append(self.__process(file['id'], deeplake_token))
 
         return ipyplot.plot_images(images_urls, img_width=200, show_url=False)
-
 
     def upload_data(self, dir_path: str, process: Literal["setup", "insight"]):
 
@@ -173,7 +170,6 @@ class manotAI:
         else:
             log.error("Process must be 'setup' or 'insight'.")
             return False
-
 
     def calculate_map(
             self,
@@ -205,11 +201,9 @@ class manotAI:
         log.error(response.text)
         return False
 
-
-    def __process(self, image_id: int):
-        url = f"{self.__url}/api/v1/image/{image_id}"
+    def __process(self, image_id: int, deeplake_token: str = None):
+        url = f"{self.__url}/api/v1/image/{image_id}?deeplake_token={deeplake_token}"
         return url
-
 
     def __check_progress(self, process_method, id):
         progress = 0
@@ -226,4 +220,3 @@ class manotAI:
                 progress_bar.close()
                 return False
             time.sleep(2)
-
