@@ -80,7 +80,8 @@ insight_info = manot.get_insight(insight["id"])
 ```
 
 ```python
-manot.visualize_data_set(insight_info['data_set']['id'])
+#in case of deeplake please also provide deeplake token 
+manot.visualize_data_set(insight_info['data_set']['id'], deeplake_token)
 ```
 
 ```python
