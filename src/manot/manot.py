@@ -1,11 +1,19 @@
 from typing import Literal, Union, Optional, List
 from .upload_manager import UploadManager
-from tqdm.notebook import tqdm
 from .logger import log
 import requests
 import ipyplot
 import json
 import time
+
+try:
+    iterminal = get_ipython().__class__.__name__
+    if "Terminal" in iterminal:
+        raise NameError()  # Using IPython terminal
+    from tqdm.notebook import tqdm
+except NameError:
+    # Python script, REPL or IPython
+    from tqdm import tqdm
 
 
 class manotAI:
