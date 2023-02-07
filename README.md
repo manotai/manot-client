@@ -70,7 +70,8 @@ insight = manot.insight(
     name="insight_example",
     setup_id=setup["id"],
     data_path="/path/to/data",
-    data_provider="local"  # it must be "s3" or "local"
+    data_provider="local",  # it must be "s3" or "local"
+    percentage="percentage" # percentage of images to be considered insight should be larger than 0 and less or equal than 100
 )
 print(insight)
 # {"id": insight_id, "name": "insight_example", "status": "started"}
