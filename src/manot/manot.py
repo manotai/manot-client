@@ -211,6 +211,19 @@ class manotAI:
         log.error(response.text)
         return False
 
+    def get_score(self, insight_id):
+        url = f"{self.__url}/api/v1/insight/{insight_id}/scores"
+        try:
+            response = requests.get(url=url, headers={"token": self.__token})
+        except Exception:
+            log.error("There is problem with request.")
+            return False
+
+        if response.status_code != 200:
+            log.warning("Insight not found.")
+            return None
+        return response.json()
+
     def __process(self, image_id: int, deeplake_token: str = None):
         url = f"{self.__url}/api/v1/image/{image_id}?deeplake_token={deeplake_token}"
         return url
