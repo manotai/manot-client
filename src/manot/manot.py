@@ -220,7 +220,7 @@ class manotAI:
             return False
 
         if response.status_code != 200:
-            log.warning("Insight not found.")
+            log.warning(response.json()['message'])
             return None
         return response.json()
 
