@@ -80,6 +80,11 @@ insight_info = manot.get_insight(insight["id"])
 # when setup is successfully finished, then insight_info is {"id": insight_id, "name": "setup_example", "status": "started"}
 ```
 
+```
+scores = manot.get_scores(insight['id'])
+#returns list of all processed images graded by their score from 0 to 10 (higher is more impactful image)
+```
+
 ```python
 #in case of deeplake please also provide deeplake token 
 manot.visualize_data_set(insight_info['data_set']['id'], deeplake_token)
