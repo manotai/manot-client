@@ -1,10 +1,12 @@
 from typing import Literal, Union, Optional, List
 from .upload_manager import UploadManager
+from IPython import get_ipython
 from .logger import log
 import requests
 import ipyplot
 import json
 import time
+
 
 try:
     iterminal = get_ipython().__class__.__name__
@@ -67,7 +69,10 @@ class manotAI:
             log.info("Setup process is being prepared to be started.")
             progress_result = self.__check_progress(self.get_setup, response.json()["id"])
             if progress_result:
-                log.info("Setup has successfully created.")
+                if progress_result['status'] == "finished":
+                    log.info("Setup process has successfully finished.")
+                elif progress_result['status'] == "failure":
+                    log.error(f'There is problem setup process with id {response.json()["id"]}.')
                 return progress_result
             else:
                 log.error(f'There is problem setup process with id {response.json()["id"]}.')
@@ -125,7 +130,10 @@ class manotAI:
             log.info("Insight process is being prepared to be started.")
             progress_result = self.__check_progress(self.get_insight, response.json()["id"])
             if progress_result:
-                log.info("Insight has successfully created.")
+                if progress_result['status'] == "finished":
+                    log.info("Insight process has successfully finished.")
+                elif progress_result['status'] == "failure":
+                    log.error(f'There is problem insight process with id {response.json()["id"]}.')
                 return progress_result
             else:
                 log.error(f'There is problem insight process with id {response.json()["id"]}.')
@@ -233,10 +241,11 @@ class manotAI:
         progress_bar = tqdm(desc="Progress", total=100)
         while progress < 100:
             result = process_method(id)
-            if result and result["status"] != "failure":
-                progress_bar.update(result['progress'] - progress)
-                progress = result['progress']
-                if result["status"] == "finished":
+            if result:
+                if result["status"] != "failure":
+                    progress_bar.update(result['progress'] - progress)
+                    progress = result['progress']
+                if result["status"] in ["finished", "failure"]:
                     progress_bar.close()
                     return result
             else:
