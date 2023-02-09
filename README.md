@@ -81,7 +81,7 @@ insight_info = manot.get_insight(insight["id"])
 ```
 
 ```
-scores = manot.get_scores(insight['id'])
+scores = manot.get_score(insight['id'])
 #returns list of all processed images graded by their score from 0 to 10 (higher is more impactful image)
 ```
 
