@@ -11,4 +11,7 @@ setup(
     url='https://www.manot.ai',
     packages=['manot'],
     package_dir={'manot': 'src/manot'},
+    project_urls={
+        'Source': 'https://github.com/manotai/manot-client',
+    },
 )

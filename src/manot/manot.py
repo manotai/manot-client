@@ -158,8 +158,8 @@ class manotAI:
 
         return response.json()
 
-    def visualize_data_set(self, data_set_id: int, deeplake_token: str = None):
-        url = f"{self.__url}/api/v1/data_set/{data_set_id}?deeplake_token={deeplake_token}"
+    def visualize_data_set(self, data_set_id: int, deeplake_token: str = None, group_similar=True):
+        url = f"{self.__url}/api/v1/data_set/{data_set_id}?deeplake_token={deeplake_token}&group_similar={group_similar}"
 
         try:
             response = requests.get(url=url).json()
@@ -175,8 +175,7 @@ class manotAI:
         images_urls = []
         for file in images:
             images_urls.append(self.__process(file['id'], deeplake_token))
-
-        return ipyplot.plot_images(images_urls, img_width=200, show_url=False)
+        return ipyplot.plot_images(images_urls, img_width=200, show_url=False, max_images=len(images_urls))
 
     def upload_data(self, dir_path: str, process: Literal["setup", "insight"]):
 
