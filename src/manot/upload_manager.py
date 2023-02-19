@@ -5,7 +5,7 @@ import requests
 import os.path
 import glob
 import uuid
-
+from typing import List
 
 class UploadManager:
 
@@ -94,7 +94,7 @@ class UploadManager:
 
 
 
-    def upload_data(self, data: list[dict]) -> bool:
+    def upload_data(self, data: List[dict]) -> bool:
 
         paths_count = len(data)
         progress_bar = tqdm(desc="Uploading...", total=paths_count)
