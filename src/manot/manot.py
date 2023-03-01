@@ -61,8 +61,8 @@ class manotAI:
 
         try:
             response = requests.post(url=url, data=json.dumps(arguments), headers={"token": self.__token})
-        except Exception:
-            log.error("There is problem with request.")
+        except requests.exceptions.RequestException as e:
+            log.error("There is problem with request: [%s] %s" % (type(e).__name__, str(e)))
             return False
 
         if response.status_code == 202:
@@ -87,8 +87,8 @@ class manotAI:
 
         try:
             response = requests.get(url=url)
-        except Exception:
-            log.error("There is problem with request.")
+        except requests.exceptions.RequestException as e:
+            log.error("There is problem with request: [%s] %s" % (type(e).__name__, str(e)))
             return False
 
         if response.status_code != 200:
@@ -122,8 +122,8 @@ class manotAI:
 
         try:
             response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
-        except Exception:
-            log.error("There is problem with request.")
+        except requests.exceptions.RequestException as e:
+            log.error("There is problem with request: [%s] %s" % (type(e).__name__, str(e)))
             return False
 
         if response.status_code == 202:
@@ -148,8 +148,8 @@ class manotAI:
 
         try:
             response = requests.get(url=url)
-        except Exception:
-            log.error("There is problem with request.")
+        except requests.exceptions.RequestException as e:
+            log.error("There is problem with request: [%s] %s" % (type(e).__name__, str(e)))
             return False
 
         if response.status_code != 200:
@@ -163,8 +163,8 @@ class manotAI:
 
         try:
             response = requests.get(url=url).json()
-        except Exception:
-            log.error("There is problem with request.")
+        except requests.exceptions.RequestException as e:
+            log.error("There is problem with request: [%s] %s" % (type(e).__name__, str(e)))
             return False
 
         if not response:
@@ -207,8 +207,8 @@ class manotAI:
 
         try:
             response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
-        except Exception:
-            log.error("There is problem with request.")
+        except requests.exceptions.RequestException as e:
+            log.error("There is problem with request: [%s] %s" % (type(e).__name__, str(e)))
             return False
 
         if response.status_code == 200:
