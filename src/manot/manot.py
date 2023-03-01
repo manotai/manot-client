@@ -43,7 +43,8 @@ class manotAI:
                 detections_score_key: str,
                 ground_truths_boxes_key: str,
                 ground_truths_labels_key: str,
-                classes: Optional[list[str]]
+                classes: Optional[list[str]],
+                weight_name: Optional[Literal["yolov5s"]]
             Otherwise:
                 name: str,
                 images_path: str,
@@ -51,6 +52,7 @@ class manotAI:
                 detections_path: str,
                 detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
                 classes_txt_path: str,
+                weight_name: Optional[Literal["yolov5s"]]
         """
 
         url = f"{self.__url}/api/v1/setup/"
