@@ -4,7 +4,7 @@ version = "0.6.3"
 authors = [
     { name = "manot", email = "engineering@manot.ai" },
 ]
-license = "MIT"
+license = {text = "MIT"}
 description = "manot AI is a model observability platform to monitor computer vision performance in real-time."
 readme = "README.md"
 requires-python = ">=3.8"
