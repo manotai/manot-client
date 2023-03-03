@@ -9,12 +9,11 @@ import time
 
 
 try:
-    iterminal = get_ipython().__class__.__name__
-    if "Terminal" in iterminal:
-        raise NameError()  # Using IPython terminal
-    from tqdm.notebook import tqdm
+    if get_ipython():
+        from tqdm.notebook import tqdm  # Using IPython terminal
+    else:
+        raise NameError()
 except NameError:
-    # Python script, REPL or IPython
     from tqdm import tqdm
 
 
@@ -244,7 +243,7 @@ class manotAI:
             result = process_method(id)
             if result:
                 if result["status"] != "failure":
-                    progress_bar.update(result['progress'] - progress)
+                    progress_bar.update(int(result['progress'] - progress))
                     progress = result['progress']
                 if result["status"] in ["finished", "failure"]:
                     progress_bar.close()
