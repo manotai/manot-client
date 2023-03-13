@@ -1,10 +1,10 @@
 [project]
 name = "manot"
-version = "0.6.2"
+version = "0.6.4"
 authors = [
     { name = "manot", email = "engineering@manot.ai" },
 ]
-license = { file = "LICENSE" }
+license = {text = "MIT"}
 description = "manot AI is a model observability platform to monitor computer vision performance in real-time."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -19,7 +19,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-keywords = ["src", "pyproject.toml"]
 
 dependencies = [
     "requests>=2.28.1",
@@ -29,9 +28,10 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://www.manot.ai"
-documentation = "https://api.manot.ai/api-documentation/v1"
-#repository = ""
+Homepage = "https://www.manot.ai"
+Documentation = "https://api.manot.ai/api-documentation/v1"
+Source = "https://github.com/manotai/manot-client"
+
 
 [build-system]
 requires = ["setuptools>=61.0"]

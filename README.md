@@ -38,7 +38,8 @@ setup = manot.setup(
             "ground_truths_path": "/path/to/ground_truths",
             "detections_path": "/path/to/detections",
             "detections_metadata_format": "xyx2y2",  # it must be one of "xyx2y2", "xywh", or "cxcywh"
-            "classes_txt_path": "/path/to/classes.txt"
+            "classes_txt_path": "/path/to/classes.txt",
+            "weight_name": "yolov5s" # by default, it is None
         }
 )
 
@@ -55,7 +56,8 @@ setup = manot.setup(
             "detections_score_key": "deeplake key where detections score is stored",
             "ground_truths_boxes_key": "deeplake key where ground truth boxes are stored",
             "ground_truths_labels_key": "deeplake key where ground truth labels are stored",
-            "classes": "classes for deeplake"
+            "classes": "classes for deeplake",
+            "weight_name": "yolov5s" # by default, it is None   
         }
 )
 print(setup)

@@ -9,12 +9,11 @@ import time
 
 
 try:
-    iterminal = get_ipython().__class__.__name__
-    if "Terminal" in iterminal:
-        raise NameError()  # Using IPython terminal
-    from tqdm.notebook import tqdm
+    if get_ipython():
+        from tqdm.notebook import tqdm  # Using IPython terminal
+    else:
+        raise NameError()
 except NameError:
-    # Python script, REPL or IPython
     from tqdm import tqdm
 
 
@@ -43,7 +42,8 @@ class manotAI:
                 detections_score_key: str,
                 ground_truths_boxes_key: str,
                 ground_truths_labels_key: str,
-                classes: Optional[list[str]]
+                classes: Optional[list[str]],
+                weight_name: Optional[Literal["yolov5s"]]
             Otherwise:
                 name: str,
                 images_path: str,
@@ -51,6 +51,7 @@ class manotAI:
                 detections_path: str,
                 detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
                 classes_txt_path: str,
+                weight_name: Optional[Literal["yolov5s"]]
         """
 
         url = f"{self.__url}/api/v1/setup/"
@@ -242,7 +243,7 @@ class manotAI:
             result = process_method(id)
             if result:
                 if result["status"] != "failure":
-                    progress_bar.update(result['progress'] - progress)
+                    progress_bar.update(int(result['progress'] - progress))
                     progress = result['progress']
                 if result["status"] in ["finished", "failure"]:
                     progress_bar.close()
