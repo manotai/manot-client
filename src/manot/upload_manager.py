@@ -7,6 +7,7 @@ import glob
 import uuid
 from typing import List
 
+
 class UploadManager:
 
     def __init__(self, directory: str, url: str, token: str):
@@ -14,7 +15,6 @@ class UploadManager:
         self.url = url
         self.token = token
         self.save_path = str(uuid.uuid4())
-
 
     def upload_insight_data(self):
 
@@ -33,7 +33,6 @@ class UploadManager:
 
         if self.upload_data(correct_files):
             return {"data_path": os.path.join(self.save_path, "images")}
-
 
     def upload_setup_data(self):
 
@@ -92,8 +91,6 @@ class UploadManager:
                 "classes_txt_path": os.path.join(self.save_path, "classes.txt")
             }
 
-
-
     def upload_data(self, data: List[dict]) -> bool:
 
         paths_count = len(data)
@@ -105,7 +102,6 @@ class UploadManager:
         progress_bar.close()
 
         return True
-
 
     def __upload_file(self, file) -> None:
 
@@ -119,7 +115,6 @@ class UploadManager:
             log.info(f'{file["path"]} is successfully uploaded.')
         else:
             log.error("Something went wrong.")
-
 
     def _is_exist(self, path: str) -> bool:
         if os.path.isdir(path):
