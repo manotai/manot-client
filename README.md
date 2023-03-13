@@ -39,9 +39,12 @@ setup = manot.setup(
             "detections_path": "/path/to/detections",
             "detections_metadata_format": "xyx2y2",  # it must be one of "xyx2y2", "xywh", or "cxcywh"
             "classes_txt_path": "/path/to/classes.txt",
+            "task": 'task_type', #can be classification or detection, in case of classification you don't have to provide ground_truths_path or detections_metadata_format
             "weight_name": "yolov5s" # by default, it is None
+            
         }
 )
+#for classification predictions should be in yolo format (txt file containing probability, classname) 
 
 # Setup process for deeplake provider
 setup = manot.setup(
@@ -57,6 +60,7 @@ setup = manot.setup(
             "ground_truths_boxes_key": "deeplake key where ground truth boxes are stored",
             "ground_truths_labels_key": "deeplake key where ground truth labels are stored",
             "classes": "classes for deeplake",
+            "task": 'task_type', #can be classification or detection, in case of classification you don't have to provide detections_metadata_format
             "weight_name": "yolov5s" # by default, it is None   
         }
 )
@@ -83,7 +87,7 @@ insight_info = manot.get_insight(insight["id"])
 ```
 
 ```
-scores = manot.get_scores(insight['id'])
+scores = manot.get_score(insight['id'])
 #returns list of all processed images graded by their score from 0 to 10 (higher is more impactful image)
 # if the image cannot be assigned a score it will not be showing in the list 
 ```
@@ -105,10 +109,23 @@ For Insight process
 - dir_path is directory path, which must contain data. Data formats must be ".jpeg", ".jpg", ".png", ".avi", ".gif", ".m4v", ".mkv" or ".mp4".
 - process must be "insight".
 
+
+In case of detection task use this to calculate mAP on your data
 ```python
 manot.calculate_map(
     ground_truths_path="/path/to/ground_truths",
     detections_path="/path/to/detections",
+    classes_txt_path="/path/to/classes.txt",
+    data_provider="local",  # it must be "s3" or "local"
+    data_set_id="data_set_id",  # if data_set_id is provided will calculate mAP only on selected data, otherwise will calculate mAP on all the data
+)
+```
+In case of classification use this to calculate accuracy on your data
+
+```python
+manot.calculate_accuracy(
+    images_path="/path/to/images",
+    predictions_path="/path/to/predictions",
     classes_txt_path="/path/to/classes.txt",
     data_provider="local",  # it must be "s3" or "local"
     data_set_id="data_set_id",  # if data_set_id is provided will calculate mAP only on selected data, otherwise will calculate mAP on all the data

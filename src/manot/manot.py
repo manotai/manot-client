@@ -42,6 +42,7 @@ class manotAI:
                 detections_score_key: str,
                 ground_truths_boxes_key: str,
                 ground_truths_labels_key: str,
+                task: Literal['detection', 'classification']
                 classes: Optional[list[str]],
                 weight_name: Optional[Literal["yolov5s"]]
             Otherwise:
