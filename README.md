@@ -29,9 +29,14 @@ manot = manotAI("manot_service_url", "token")
 ```
 
 ```python
+# Upload data to manot manager S3 bucket for Setup. The data should be in YOLO format
+manot.upload_data(dir_path="/path/to/data", process="setup")
+```
+
+```python
 # Setup process for "local" and "s3" providers
 setup = manot.setup(
-    data_provider="local", # it must be "s3" or "local"
+    data_provider="s3", # it must be "s3" or "local"
     arguments={
             "name": "setup_example",
             "images_path": "/path/to/images",
@@ -72,11 +77,16 @@ setup_info = manot.get_setup(setup["id"])
 ```
 
 ```python
+# Upload data to manot manager S3 bucket to get insights
+manot.upload_data(dir_path="/path/to/data", process="insight")
+```
+
+```python
 insight = manot.insight(
     name="insight_example",
     setup_id=setup["id"],
     data_path="/path/to/data",
-    data_provider="local",  # it must be "s3" or "local"
+    data_provider="s3",  # it must be "s3" or "local"
     percentage="percentage" # percentage of images to be considered insight should be larger than 0 and less or equal than 100
 )
 print(insight)
