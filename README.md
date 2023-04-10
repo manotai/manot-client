@@ -13,7 +13,7 @@ has detected on the new unstructured data that the performance of the model is e
 Installation
 ------------
 
-Install manot with `pip`:
+Install manot using `pip`:
 
     pip install manot
 
