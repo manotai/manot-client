@@ -83,6 +83,46 @@ class manotAI:
         log.error(response.text)
         return False
 
+    def huggingface_insight(
+            self,
+            name: str,
+            data_path: str,
+            task: Optional[Literal['classification', 'segmentation', 'detection']] = 'detection',
+            percentage: Optional[float] = None,
+            model_path: Optional[str] = None,
+
+    ) -> Union[bool, dict]:
+
+        url = f"{self.__url}/api/v1/insight/huggingface"
+        data = {
+            "name": name,
+            "data_path": data_path,
+            "model_path": model_path,
+            "task": task,
+            "percentage": percentage
+        }
+        try:
+            response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
+        except Exception:
+            log.error("There is problem with request.")
+            return False
+
+        if response.status_code == 202:
+            log.info("Insight process is being prepared to be started.")
+            progress_result = self.__check_progress(self.get_insight, response.json()["id"])
+            if progress_result:
+                if progress_result['status'] == "finished":
+                    log.info("Insight process has successfully finished.")
+                elif progress_result['status'] == "failure":
+                    log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                return progress_result
+            else:
+                log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                return False
+
+        log.error(response.text)
+        return False
+
     def get_setup(self, setup_id: int) -> Union[bool, None, dict]:
 
         url = f"{self.__url}/api/v1/setup/{setup_id}"
@@ -98,7 +138,6 @@ class manotAI:
             return None
 
         return response.json()
-
     def insight(
             self,
             name: str,
@@ -143,7 +182,6 @@ class manotAI:
 
         log.error(response.text)
         return False
-
     def get_insight(self, insight_id: int) -> Union[bool, None, dict]:
 
         url = f"{self.__url}/api/v1/insight/{insight_id}"
