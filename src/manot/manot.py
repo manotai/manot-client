@@ -83,46 +83,6 @@ class manotAI:
         log.error(response.text)
         return False
 
-    def huggingface_insight(
-            self,
-            name: str,
-            data_path: str,
-            task: Optional[Literal['classification', 'segmentation', 'detection']] = 'detection',
-            percentage: Optional[float] = None,
-            model_path: Optional[str] = None,
-
-    ) -> Union[bool, dict]:
-
-        url = f"{self.__url}/api/v1/insight/huggingface"
-        data = {
-            "name": name,
-            "data_path": data_path,
-            "model_path": model_path,
-            "task": task,
-            "percentage": percentage
-        }
-        try:
-            response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
-        except Exception:
-            log.error("There is problem with request.")
-            return False
-
-        if response.status_code == 202:
-            log.info("Insight process is being prepared to be started.")
-            progress_result = self.__check_progress(self.get_insight, response.json()["id"])
-            if progress_result:
-                if progress_result['status'] == "finished":
-                    log.info("Insight process has successfully finished.")
-                elif progress_result['status'] == "failure":
-                    log.error(f'There is problem insight process with id {response.json()["id"]}.')
-                return progress_result
-            else:
-                log.error(f'There is problem insight process with id {response.json()["id"]}.')
-                return False
-
-        log.error(response.text)
-        return False
-
     def get_setup(self, setup_id: int) -> Union[bool, None, dict]:
 
         url = f"{self.__url}/api/v1/setup/{setup_id}"
@@ -138,6 +98,7 @@ class manotAI:
             return None
 
         return response.json()
+
     def insight(
             self,
             name: str,
@@ -182,6 +143,48 @@ class manotAI:
 
         log.error(response.text)
         return False
+
+    def huggingface_insight(
+            self,
+            name: str,
+            data_path: str,
+            task: Optional[Literal['classification', 'segmentation', 'detection']] = 'detection',
+            percentage: Optional[float] = None,
+            model_path: Optional[str] = None,
+
+
+    ) -> Union[bool, dict]:
+
+        url = f"{self.__url}/api/v1/insight/huggingface"
+        data = {
+            "name": name,
+            "data_path": data_path,
+            "model_path": model_path,
+            "task": task,
+            "percentage": percentage
+        }
+        try:
+            response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
+        except Exception:
+            log.error("There is problem with request.")
+            return False
+
+        if response.status_code == 202:
+            log.info("Insight process is being prepared to be started.")
+            progress_result = self.__check_progress(self.get_insight, response.json()["id"])
+            if progress_result:
+                if progress_result['status'] == "finished":
+                    log.info("Insight process has successfully finished.")
+                elif progress_result['status'] == "failure":
+                    log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                return progress_result
+            else:
+                log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                return False
+
+        log.error(response.text)
+        return False
+
     def get_insight(self, insight_id: int) -> Union[bool, None, dict]:
 
         url = f"{self.__url}/api/v1/insight/{insight_id}"
@@ -198,7 +201,14 @@ class manotAI:
 
         return response.json()
 
-    def visualize_data_set(self, data_set_id: int, deeplake_token: str = None, group_similar=True):
+    def visualize_data_set(
+            self,
+            data_set_id: int,
+            deeplake_token: str = None,
+            group_similar=True,
+            with_inference: Optional[bool] = False,
+            huggingface_model: Optional[str] = None
+    ):
         url = f"{self.__url}/api/v1/data_set/{data_set_id}?deeplake_token={deeplake_token}&group_similar={group_similar}"
 
         try:
@@ -214,7 +224,7 @@ class manotAI:
         images = response['data_set_images']
         images_urls = []
         for file in images:
-            images_urls.append(self.__process(file['id'], deeplake_token))
+            images_urls.append(self.__process(file['id'], deeplake_token, with_inference, huggingface_model))
         return ipyplot.plot_images(images_urls, img_width=200, show_url=False, max_images=len(images_urls))
 
     def upload_data(self, dir_path: str, process: Literal["setup", "insight"]):
@@ -301,8 +311,9 @@ class manotAI:
             return None
         return response.json()
 
-    def __process(self, image_id: int, deeplake_token: str = None):
-        url = f"{self.__url}/api/v1/image/{image_id}?deeplake_token={deeplake_token}"
+    def __process(self, image_id: int, deeplake_token: str = None, with_inference=False,huggingface_model=None):
+
+        url = f"{self.__url}/api/v1/image/{image_id}?deeplake_token={deeplake_token}&with_inference={with_inference}&huggingface_model={huggingface_model}&time={time.time()}"
         return url
 
     def __check_progress(self, process_method, id):
