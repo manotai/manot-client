@@ -104,7 +104,8 @@ scores = manot.get_score(insight['id'])
 
 ```python
 #in case of deeplake please also provide deeplake token 
-manot.visualize_data_set(insight_info['data_set']['id'], deeplake_token)
+manot.visualize_data_set(insight_info['data_set']['id'], deeplake_token,group_similar=True)
+# if group similar is set to True(default) will only return unique images 
 ```
 
 ```python
