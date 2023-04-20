@@ -28,15 +28,21 @@ from manot import manotAI
 manot = manotAI("manot_service_url", "token")
 ```
 
+Uploading data for setup
+-------
+
 ```python
 # Upload data to manot manager S3 bucket for Setup. The data should be in YOLO format
 manot.upload_data(dir_path="/path/to/data", process="setup")
 ```
 
+Running setup 
+-------
+
 ```python
-# Setup process for "local" and "s3" providers
+# Setup process for "local","gcs" and "s3" providers
 setup = manot.setup(
-    data_provider="s3", # it must be "s3" or "local"
+    data_provider="s3", # it must be "s3", "gcs" or "local"
     arguments={
             "name": "setup_example",
             "images_path": "/path/to/images",
@@ -72,21 +78,31 @@ setup = manot.setup(
 print(setup)
 # {"id": setup_id, "name": "setup_example", "status": "started"}
 
+```
+Get setup by id 
+-------
+
+```python
+
 setup_info = manot.get_setup(setup["id"])
 # when setup is successfully finished, then setup_info is {"id": setup_id, "name": "setup_example", "status": "started"}
 ```
+Upload data to get insights from 
+-------
 
 ```python
 # Upload data to manot manager S3 bucket to get insights
 manot.upload_data(dir_path="/path/to/data", process="insight")
 ```
+Running insight on data in s3, gcs or local machine
+-------
 
 ```python
 insight = manot.insight(
     name="insight_example",
     setup_id=setup["id"],
     data_path="/path/to/data",
-    data_provider="s3",  # it must be "s3" or "local"
+    data_provider="s3",  # it must be "s3", "gcs" or "local"
     percentage="percentage" # percentage of images to be considered insight should be larger than 0 and less or equal than 100
 )
 print(insight)
@@ -94,6 +110,20 @@ print(insight)
 
 insight_info = manot.get_insight(insight["id"])
 # when setup is successfully finished, then insight_info is {"id": insight_id, "name": "setup_example", "status": "started"}
+```
+
+Running insight on hugging face model and dataset 
+-------
+
+```python
+insight = manot.huggingface_insight(
+    name='manot-huggingface',
+    data_path="huggingface_dataset",
+    model_path="huggingface_model",
+    task="detection",
+    percentage=0.5
+)
+insight_info = manot.get_insight(insight["id"])
 ```
 
 ```
@@ -108,26 +138,13 @@ manot.visualize_data_set(insight_info['data_set']['id'], deeplake_token,group_si
 # if group similar is set to True(default) will only return unique images 
 ```
 
-```python
-# Upload data for Setup or Insights process
-manot.upload_data(dir_path="/path/to/data", process="process_name")
-```
-For Setup process
-- dir_path is directory path, which must contain images, detections, and ground_truths folders and classes.txt file.
-- process must be "setup".
-
-For Insight process
-- dir_path is directory path, which must contain data. Data formats must be ".jpeg", ".jpg", ".png", ".avi", ".gif", ".m4v", ".mkv" or ".mp4".
-- process must be "insight".
-
-
 In case of detection task use this to calculate mAP on your data
 ```python
 manot.calculate_map(
     ground_truths_path="/path/to/ground_truths",
     detections_path="/path/to/detections",
     classes_txt_path="/path/to/classes.txt",
-    data_provider="local",  # it must be "s3" or "local"
+    data_provider="local",  # it must be "s3", "gcs" or "local"
     data_set_id="data_set_id",  # if data_set_id is provided will calculate mAP only on selected data, otherwise will calculate mAP on all the data
 )
 ```
@@ -138,7 +155,7 @@ manot.calculate_accuracy(
     images_path="/path/to/images",
     predictions_path="/path/to/predictions",
     classes_txt_path="/path/to/classes.txt",
-    data_provider="local",  # it must be "s3" or "local"
+    data_provider="local",  # it must be "s3", "gcs" or "local"
     data_set_id="data_set_id",  # if data_set_id is provided will calculate mAP only on selected data, otherwise will calculate mAP on all the data
 )
 ```
