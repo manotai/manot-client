@@ -88,7 +88,7 @@ class manotAI:
         url = f"{self.__url}/api/v1/setup/{setup_id}"
 
         try:
-            response = requests.get(url=url)
+            response = requests.get(url=url, headers={"token": self.__token})
         except Exception:
             log.error("There is problem with request.")
             return False
@@ -190,7 +190,7 @@ class manotAI:
         url = f"{self.__url}/api/v1/insight/{insight_id}"
 
         try:
-            response = requests.get(url=url)
+            response = requests.get(url=url, headers={"token": self.__token})
         except Exception:
             log.error("There is problem with request.")
             return False
@@ -212,7 +212,7 @@ class manotAI:
         url = f"{self.__url}/api/v1/data_set/{data_set_id}?deeplake_token={deeplake_token}&group_similar={group_similar}"
 
         try:
-            response = requests.get(url=url).json()
+            response = requests.get(url=url, headers={"token": self.__token}).json()
         except Exception:
             log.error("There is problem with request.")
             return False
