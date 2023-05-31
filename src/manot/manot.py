@@ -67,7 +67,7 @@ class manotAI:
             log.error("There is problem with request.")
             return False
 
-        if response.status_code == 202:
+        if response.status_code == 201:
             log.info("Setup process is being prepared to be started.")
             progress_result = self.__check_progress(self.get_setup, response.json()["id"])
             if progress_result:
@@ -128,7 +128,7 @@ class manotAI:
             log.error("There is problem with request.")
             return False
 
-        if response.status_code == 202:
+        if response.status_code == 201:
             log.info("Insight process is being prepared to be started.")
             progress_result = self.__check_progress(self.get_insight, response.json()["id"])
             if progress_result:
@@ -169,7 +169,7 @@ class manotAI:
             log.error("There is problem with request.")
             return False
 
-        if response.status_code == 202:
+        if response.status_code == 201:
             log.info("Insight process is being prepared to be started.")
             progress_result = self.__check_progress(self.get_insight, response.json()["id"])
             if progress_result:
