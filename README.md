@@ -28,23 +28,23 @@ from manot import manotAI
 manot = manotAI("manot_service_url", "token")
 ```
 
-Uploading data for setup
+Uploading data for creating a project
 -------
 
 ```python
-# Upload data to manot manager S3 bucket for Setup. The data should be in YOLO format
-manot.upload_data(dir_path="/path/to/data", process="setup")
+# Upload data to manot manager S3 bucket for creating a project. The data should be in YOLO format
+manot.upload_data(dir_path="/path/to/data", process="project")
 ```
 
-Running setup 
+Running project 
 -------
 
 ```python
-# Setup process for "local","gcs" and "s3" providers
-setup = manot.setup(
+# Create a project for "local","gcs" and "s3" providers
+project = manot.create_project(
     data_provider="s3", # it must be "s3", "gcs" or "local"
     arguments={
-            "name": "setup_example",
+            "name": "project_example",
             "images_path": "/path/to/images",
             "ground_truths_path": "/path/to/ground_truths",
             "detections_path": "/path/to/detections",
@@ -58,10 +58,10 @@ setup = manot.setup(
 #for classification predictions should be in yolo format (txt file containing probability, classname) 
 
 # Setup process for deeplake provider
-setup = manot.setup(
+project = manot.create_project(
     data_provider="deeplake",
     arguments={
-            "name": "setup_example",
+            "name": "project_example",
             "detections_metadata_format": "xyx2y2",  # it must be one of "xyx2y2", "xywh", or "cxcywh"
             "deeplake_token": "your deeplake token",
             "data_set": "user/dataset/",
@@ -75,66 +75,66 @@ setup = manot.setup(
             "weight_name": "yolov5s" # by default, it is None   
         }
 )
-print(setup)
-# {"id": setup_id, "name": "setup_example", "status": "started"}
+print(project)
+# {"id": project_id, "name": "project_example", "status": "started"}
 
 ```
-Get setup by id 
+Get project by id 
 -------
 
 ```python
 
-setup_info = manot.get_setup(setup["id"])
-# when setup is successfully finished, then setup_info is {"id": setup_id, "name": "setup_example", "status": "started"}
+project_info = manot.get_project(project["id"])
+# when creating a project is successfully finished, then project_info is {"id": project_id, "name": "project_example", "status": "started"}
 ```
 Upload data to get insights from 
 -------
 
 ```python
 # Upload data to manot manager S3 bucket to get insights
-manot.upload_data(dir_path="/path/to/data", process="insight")
+manot.upload_data(dir_path="/path/to/data", process="evaluation")
 ```
-Running insight on data in s3, gcs or local machine
+Running evaluation on data in s3, gcs or local machine
 -------
 
 ```python
-insight = manot.insight(
+evaluation = manot.evaluate(
     name="insight_example",
-    setup_id=setup["id"],
+    project_id=project["id"],
     data_path="/path/to/data",
     data_provider="s3",  # it must be "s3", "gcs" or "local"
     percentage="percentage" # percentage of images to be considered insight should be larger than 0 and less or equal than 100
 )
-print(insight)
-# {"id": insight_id, "name": "insight_example", "status": "started"}
+print(evaluation)
+# {"id": evaluation_id, "name": "evaluation_example", "status": "started"}
 
-insight_info = manot.get_insight(insight["id"])
-# when setup is successfully finished, then insight_info is {"id": insight_id, "name": "setup_example", "status": "started"}
+evaluation_info = manot.get_evaluation(evaluation["id"])
+# when evaluation is successfully finished, then evaluation_info is {"id": evaluation_id, "name": "evaluation_example", "status": "finished"}
 ```
 
-Running insight on hugging face model and dataset 
+Running evaluation on hugging face model and dataset 
 -------
 
 ```python
-insight = manot.huggingface_insight(
+evaluation = manot.huggingface_evaluation(
     name='manot-huggingface',
     data_path="huggingface_dataset",
     model_path="huggingface_model",
     task="detection",
     percentage=0.5
 )
-insight_info = manot.get_insight(insight["id"])
+evaluation_info = manot.get_evaluation(evaluation["id"])
 ```
 
 ```
-scores = manot.get_score(insight['id'])
+scores = manot.get_score(evaluation['id'])
 #returns list of all processed images graded by their score from 0 to 10 (higher is more impactful image)
 # if the image cannot be assigned a score it will not be showing in the list 
 ```
 
 ```python
 #in case of deeplake please also provide deeplake token 
-manot.visualize_data_set(insight_info['data_set']['id'], deeplake_token,group_similar=True)
+manot.visualize_data_set(evaluation_info['data_set']['id'], deeplake_token,group_similar=True)
 # if group similar is set to True(default) will only return unique images 
 ```
 

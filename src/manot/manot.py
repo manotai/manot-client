@@ -23,14 +23,14 @@ class manotAI:
         self.__url = url.rstrip('/')
         self.__token = token
 
-    def setup(
+    def create_project(
             self,
             data_provider: Literal['s3', 'local', 'deeplake'],
             arguments: dict
     ) -> Union[bool, dict]:
         """
         :param data_provider: Provider name, it must be 's3', 'local' or 'deeplake'.
-        :param arguments: Request data to start setup process.
+        :param arguments: Request data to create project.
 
             If data_provider is 'deeplake', arguments must contain such values::
                 name: str,
@@ -55,7 +55,7 @@ class manotAI:
                 weight_name: Optional[Literal["yolov5s"]]
         """
 
-        url = f"{self.__url}/api/v1/setup/"
+        url = f"{self.__url}/api/v1/project/"
         if data_provider == "deeplake":
             url = f"{url}deeplake"
 
@@ -68,24 +68,24 @@ class manotAI:
             return False
 
         if response.status_code == 201:
-            log.info("Setup process is being prepared to be started.")
-            progress_result = self.__check_progress(self.get_setup, response.json()["id"])
+            log.info("Project process is being prepared to be started.")
+            progress_result = self.__check_progress(self.get_project, response.json()["id"])
             if progress_result:
                 if progress_result['status'] == "finished":
-                    log.info("Setup process has successfully finished.")
+                    log.info("Project process has successfully finished.")
                 elif progress_result['status'] == "failure":
-                    log.error(f'There is problem setup process with id {response.json()["id"]}.')
+                    log.error(f'There is problem to create project with id {response.json()["id"]}.')
                 return progress_result
             else:
-                log.error(f'There is problem setup process with id {response.json()["id"]}.')
+                log.error(f'There is problem to create project with id {response.json()["id"]}.')
                 return False
 
         log.error(response.text)
         return False
 
-    def get_setup(self, setup_id: int) -> Union[bool, None, dict]:
+    def get_project(self, project_id: int) -> Union[bool, None, dict]:
 
-        url = f"{self.__url}/api/v1/setup/{setup_id}"
+        url = f"{self.__url}/api/v1/project/{project_id}"
 
         try:
             response = requests.get(url=url, headers={"token": self.__token})
@@ -94,15 +94,15 @@ class manotAI:
             return False
 
         if response.status_code != 200:
-            log.warning("Setup not found.")
+            log.warning("Project not found.")
             return None
 
         return response.json()
 
-    def insight(
+    def evaluate(
             self,
             name: str,
-            setup_id: int,
+            project_id: int,
             data_path: Union[str, List[str]],
             data_provider: Literal['s3', 'local', 'deeplake'],
             weight_name: Optional[str] = None,
@@ -110,10 +110,10 @@ class manotAI:
             percentage: Optional[float] = None
     ) -> Union[bool, dict]:
 
-        url = f"{self.__url}/api/v1/insight/"
+        url = f"{self.__url}/api/v1/evaluation/"
         data = {
             "name": name,
-            "setup_id": setup_id,
+            "project_id": project_id,
             "data_path": data_path,
             "data_provider": data_provider,
             "deeplake_token": deeplake_token,
@@ -129,22 +129,22 @@ class manotAI:
             return False
 
         if response.status_code == 201:
-            log.info("Insight process is being prepared to be started.")
-            progress_result = self.__check_progress(self.get_insight, response.json()["id"])
+            log.info("Evaluation process is being prepared to be started.")
+            progress_result = self.__check_progress(self.get_evaluation, response.json()["id"])
             if progress_result:
                 if progress_result['status'] == "finished":
-                    log.info("Insight process has successfully finished.")
+                    log.info("Evaluation process has successfully finished.")
                 elif progress_result['status'] == "failure":
-                    log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                    log.error(f'There is problem evaluation process with id {response.json()["id"]}.')
                 return progress_result
             else:
-                log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                log.error(f'There is problem evaluation process with id {response.json()["id"]}.')
                 return False
 
         log.error(response.text)
         return False
 
-    def huggingface_insight(
+    def huggingface_evaluation(
             self,
             name: str,
             data_path: str,
@@ -155,7 +155,7 @@ class manotAI:
 
     ) -> Union[bool, dict]:
 
-        url = f"{self.__url}/api/v1/insight/huggingface"
+        url = f"{self.__url}/api/v1/evaluation/huggingface"
         data = {
             "name": name,
             "data_path": data_path,
@@ -170,24 +170,24 @@ class manotAI:
             return False
 
         if response.status_code == 201:
-            log.info("Insight process is being prepared to be started.")
-            progress_result = self.__check_progress(self.get_insight, response.json()["id"])
+            log.info("Evaluation process is being prepared to be started.")
+            progress_result = self.__check_progress(self.get_evaluation, response.json()["id"])
             if progress_result:
                 if progress_result['status'] == "finished":
-                    log.info("Insight process has successfully finished.")
+                    log.info("Evaluation process has successfully finished.")
                 elif progress_result['status'] == "failure":
-                    log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                    log.error(f'There is problem evaluation process with id {response.json()["id"]}.')
                 return progress_result
             else:
-                log.error(f'There is problem insight process with id {response.json()["id"]}.')
+                log.error(f'There is problem evaluation process with id {response.json()["id"]}.')
                 return False
 
         log.error(response.text)
         return False
 
-    def get_insight(self, insight_id: int) -> Union[bool, None, dict]:
+    def get_evaluation(self, evaluation_id: int) -> Union[bool, None, dict]:
 
-        url = f"{self.__url}/api/v1/insight/{insight_id}"
+        url = f"{self.__url}/api/v1/evaluation/{evaluation_id}"
 
         try:
             response = requests.get(url=url, headers={"token": self.__token})
@@ -196,7 +196,7 @@ class manotAI:
             return False
 
         if response.status_code != 200:
-            log.warning("Insight not found.")
+            log.warning("Evaluation not found.")
             return None
 
         return response.json()
@@ -227,15 +227,15 @@ class manotAI:
             images_urls.append(self.__process(file['id'], deeplake_token, with_inference, huggingface_model))
         return ipyplot.plot_images(images_urls, img_width=200, show_url=False, max_images=len(images_urls))
 
-    def upload_data(self, dir_path: str, process: Literal["setup", "insight"]):
+    def upload_data(self, dir_path: str, process: Literal["project", "evaluation"]):
 
         upload_manager = UploadManager(directory=dir_path, url=self.__url, token=self.__token)
-        if process == "setup":
-            return upload_manager.upload_setup_data()
-        elif process == "insight":
-            return upload_manager.upload_insight_data()
+        if process == "project":
+            return upload_manager.upload_project_data()
+        elif process == "evaluation":
+            return upload_manager.upload_evaluation_data()
         else:
-            log.error("Process must be 'setup' or 'insight'.")
+            log.error("Process must be 'project' or 'evaluation'.")
             return False
 
     def calculate_map(
@@ -298,8 +298,8 @@ class manotAI:
         log.error(response.text)
         return False
 
-    def get_score(self, insight_id):
-        url = f"{self.__url}/api/v1/insight/{insight_id}/scores"
+    def get_score(self, evaluation_id):
+        url = f"{self.__url}/api/v1/evaluation/{evaluation_id}/scores"
         try:
             response = requests.get(url=url, headers={"token": self.__token})
         except Exception:

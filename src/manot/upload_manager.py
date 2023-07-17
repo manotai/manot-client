@@ -16,7 +16,7 @@ class UploadManager:
         self.token = token
         self.save_path = str(uuid.uuid4())
 
-    def upload_insight_data(self):
+    def upload_evaluation_data(self):
 
         if not self._is_exist(self.directory):
             log.error(f"No such directory: {self.directory}")
@@ -34,7 +34,7 @@ class UploadManager:
         if self.upload_data(correct_files):
             return {"data_path": os.path.join(self.save_path, "images")}
 
-    def upload_setup_data(self):
+    def upload_project_data(self):
 
         images_path = os.path.join(self.directory, "images")
         detections_path = os.path.join(self.directory, "detections")
