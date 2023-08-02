@@ -57,7 +57,7 @@ project = manot.create_project(
 )
 #for classification predictions should be in yolo format (txt file containing probability, classname) 
 
-# Setup process for deeplake provider
+# Creating project using deeplake as data provider
 project = manot.create_project(
     data_provider="deeplake",
     arguments={
