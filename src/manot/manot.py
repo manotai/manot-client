@@ -322,8 +322,8 @@ class manotAI:
         progress_bar = tqdm(desc="Progress", total=100)
         while status == 'started':
             result = process_method(id)
-            status = result['status']
             if result:
+                status = result['status']
                 if result["status"] != "failure":
                     progress_bar.update(int(result['progress'] - progress))
                     progress = result['progress']
