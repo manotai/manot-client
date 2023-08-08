@@ -318,10 +318,12 @@ class manotAI:
 
     def __check_progress(self, process_method, id):
         progress = 0
+        status = 'started'
         progress_bar = tqdm(desc="Progress", total=100)
-        while progress < 100:
+        while status == 'started':
             result = process_method(id)
             if result:
+                status = result['status']
                 if result["status"] != "failure":
                     progress_bar.update(int(result['progress'] - progress))
                     progress = result['progress']
