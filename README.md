@@ -51,8 +51,8 @@ project = manot.create_project(
             "detections_metadata_format": "xyx2y2",  # it must be one of "xyx2y2", "xywh", or "cxcywh"
             "classes_txt_path": "/path/to/classes.txt",
             "task": 'task_type', #can be classification or detection, in case of classification you don't have to provide ground_truths_path or detections_metadata_format
-            "weight_name": "yolov5s" # by default, it is None
-            
+            "weight_name": "yolov5s", # by default, it is None
+            "description": "The project description", # by default, it is None
         }
 )
 #for classification predictions should be in yolo format (txt file containing probability, classname) 
@@ -72,7 +72,9 @@ project = manot.create_project(
             "ground_truths_labels_key": "deeplake key where ground truth labels are stored",
             "classes": "classes for deeplake",
             "task": 'task_type', #can be classification or detection, in case of classification you don't have to provide detections_metadata_format
-            "weight_name": "yolov5s" # by default, it is None   
+            "weight_name": "yolov5s", # by default, it is None
+            "description": "The project description", # by default, it is None
+    
         }
 )
 print(project)
@@ -103,7 +105,8 @@ evaluation = manot.evaluate(
     project_id=project["id"],
     data_path="/path/to/data",
     data_provider="s3",  # it must be "s3", "gcs" or "local"
-    percentage="percentage" # percentage of images to be considered insight should be larger than 0 and less or equal than 100
+    percentage="percentage", # percentage of images to be considered insight should be larger than 0 and less or equal than 100
+    description="The evaluation description", # by default, it is None
 )
 print(evaluation)
 # {"id": evaluation_id, "name": "evaluation_example", "status": "started"}
@@ -121,7 +124,8 @@ evaluation = manot.huggingface_evaluation(
     data_path="huggingface_dataset",
     model_path="huggingface_model",
     task="detection",
-    percentage=0.5
+    percentage=0.5,
+    description="The evaluation description", # by default, it is None
 )
 evaluation_info = manot.get_evaluation(evaluation["id"])
 ```

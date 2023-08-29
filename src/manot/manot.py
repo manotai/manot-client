@@ -44,7 +44,8 @@ class manotAI:
                 ground_truths_labels_key: str,
                 task: Literal['detection', 'classification']
                 classes: Optional[list[str]],
-                weight_name: Optional[Literal["yolov5s"]]
+                weight_name: Optional[Literal["yolov5s"]],
+                description: Optional[str]
             Otherwise:
                 name: str,
                 images_path: str,
@@ -52,7 +53,8 @@ class manotAI:
                 detections_path: str,
                 detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
                 classes_txt_path: str,
-                weight_name: Optional[Literal["yolov5s"]]
+                weight_name: Optional[Literal["yolov5s"]],
+                description: Optional[str]
         """
 
         url = f"{self.__url}/api/v1/project/"
@@ -107,7 +109,8 @@ class manotAI:
             data_provider: Literal['s3', 'local', 'deeplake'],
             weight_name: Optional[str] = None,
             deeplake_token: Optional[str] = None,
-            percentage: Optional[float] = None
+            percentage: Optional[float] = None,
+            description: Optional[str] = None
     ) -> Union[bool, dict]:
 
         url = f"{self.__url}/api/v1/evaluation/"
@@ -117,7 +120,8 @@ class manotAI:
             "data_path": data_path,
             "data_provider": data_provider,
             "deeplake_token": deeplake_token,
-            "percentage": percentage
+            "percentage": percentage,
+            "description": description
         }
         if weight_name:
             data["weight_name"] = weight_name
@@ -151,8 +155,7 @@ class manotAI:
             task: Optional[Literal['classification', 'segmentation', 'detection']] = 'detection',
             percentage: Optional[float] = None,
             model_path: Optional[str] = None,
-
-
+            description: Optional[str] = None
     ) -> Union[bool, dict]:
 
         url = f"{self.__url}/api/v1/evaluation/huggingface"
@@ -161,7 +164,8 @@ class manotAI:
             "data_path": data_path,
             "model_path": model_path,
             "task": task,
-            "percentage": percentage
+            "percentage": percentage,
+            "description": description
         }
         try:
             response = requests.post(url=url, data=json.dumps(data), headers={"token": self.__token})
