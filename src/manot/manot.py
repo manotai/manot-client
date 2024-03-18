@@ -6,7 +6,7 @@ import requests
 import ipyplot
 import json
 import time
-
+from pathlib import Path
 
 try:
     if get_ipython():
@@ -19,9 +19,37 @@ except NameError:
 
 class manotAI:
 
-    def __init__(self, url: str, token: str) -> None:
+    def __init__(self, url: str) -> None:
         self.__url = url.rstrip('/')
-        self.__token = token
+        self.credentials_path = Path.home() / ".manot" / "credentials.json"
+        if self.credentials_path.exists():
+            with open(self.credentials_path, "r") as f:
+                credentials_data = json.load(f)
+            token = credentials_data["token"]
+            url = f"{self.__url}/api/v1/user/"
+            response = requests.get(url=url, headers={"token": token})
+            if response.status_code == 200:
+                self.__token = token
+            else:
+                log.info("Token expired please get a new token with get_token()")
+        else:
+            log.info("Missing credentials.json, get one with get_token()")
+
+    def get_token(self, email: str, password: str) -> None:
+        url = f"{self.__url}/api/v1/user/sign-in"
+        response = requests.post(url=url, data=json.dumps({"email": email, "password": password}))
+        if response.status_code == 200:
+            self.__token = response.headers["access-token"]
+            self.credentials_path.parent.mkdir(exist_ok=True)
+            with open(self.credentials_path, "w") as f:
+                credentials_data = {
+                    "token": self.__token
+                }
+                json.dump(credentials_data, f)
+                log.info("Credentials successfully updated!")
+        else:
+            log.info("Wrong credentials, please revise and try again!")
+            
 
     def create_project(
             self,
@@ -37,7 +65,7 @@ class manotAI:
                 detections_metadata_format: Literal['cxcywh', 'xywh', 'xyx2y2'],
                 deeplake_token: str,
                 data_set: str,
-                detections_boxes_key: str,
+                detections_boxes_key: str,`
                 detections_labels_key: str,
                 detections_score_key: str,
                 ground_truths_boxes_key: str,
